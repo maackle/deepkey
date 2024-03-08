@@ -1,10 +1,10 @@
 mod validation;
 
-pub mod utils;
 pub mod device_name;
 pub mod error;
 pub mod joining_proof;
 pub mod source_of_authority;
+pub mod utils;
 
 pub use deepkey_types::*;
 pub use device_name::*;
@@ -12,17 +12,13 @@ pub use error::*;
 pub use joining_proof::*;
 pub use source_of_authority::*;
 
-use serde_bytes;
 use hdi::prelude::*;
-use hdi_extensions::{
-    scoped_type_connector,
-    ScopedTypeConnector,
-};
-
+use hdi_extensions::{scoped_type_connector, ScopedTypeConnector};
+use serde_bytes;
 
 #[derive(Serialize, Deserialize)]
 #[serde(tag = "type")]
-#[hdk_entry_defs]
+#[hdk_entry_types]
 #[unit_enum(EntryTypesUnit)]
 pub enum EntryTypes {
     KeysetRoot(KeysetRoot),
@@ -32,37 +28,30 @@ pub enum EntryTypes {
     KeyRegistration(KeyRegistration),
     KeyAnchor(KeyAnchor),
 
-    #[entry_def(visibility = "private")]
+    #[entry_type(visibility = "private")]
     KeyMeta(KeyMeta),
-    #[entry_def(visibility = "private")]
+    #[entry_type(visibility = "private")]
     AppBinding(AppBinding),
 }
 
 scoped_type_connector!(
     EntryTypesUnit::KeysetRoot,
-    EntryTypes::KeysetRoot( KeysetRoot )
+    EntryTypes::KeysetRoot(KeysetRoot)
 );
 scoped_type_connector!(
     EntryTypesUnit::ChangeRule,
-    EntryTypes::ChangeRule( ChangeRule )
+    EntryTypes::ChangeRule(ChangeRule)
 );
 scoped_type_connector!(
     EntryTypesUnit::KeyRegistration,
-    EntryTypes::KeyRegistration( KeyRegistration )
+    EntryTypes::KeyRegistration(KeyRegistration)
 );
-scoped_type_connector!(
-    EntryTypesUnit::KeyAnchor,
-    EntryTypes::KeyAnchor( KeyAnchor )
-);
-scoped_type_connector!(
-    EntryTypesUnit::KeyMeta,
-    EntryTypes::KeyMeta( KeyMeta )
-);
+scoped_type_connector!(EntryTypesUnit::KeyAnchor, EntryTypes::KeyAnchor(KeyAnchor));
+scoped_type_connector!(EntryTypesUnit::KeyMeta, EntryTypes::KeyMeta(KeyMeta));
 scoped_type_connector!(
     EntryTypesUnit::AppBinding,
-    EntryTypes::AppBinding( AppBinding )
+    EntryTypes::AppBinding(AppBinding)
 );
-
 
 #[derive(Serialize, Deserialize)]
 #[hdk_link_types]
@@ -73,8 +62,6 @@ pub enum LinkTypes {
     DeviceName,
     AppBindingToKeyMeta,
 }
-
-
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct MembraneProof {
